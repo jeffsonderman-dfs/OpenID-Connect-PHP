@@ -293,10 +293,11 @@ class OpenIDConnectClient
     }
 
     /**
+     * @param array $state Custom state data to accompany an authorization request
      * @return bool
      * @throws OpenIDConnectClientException
      */
-    public function authenticate(): bool
+    public function authenticate($state = array()): bool
     {
         // Do a preemptive check to see if the provider has thrown an error from a previous redirect
         if (isset($_REQUEST['error'])) {
@@ -416,7 +417,7 @@ class OpenIDConnectClient
             throw new OpenIDConnectClientException ('Unable to verify JWT claims');
         }
 
-        $this->requestAuthorization();
+        $this->requestAuthorization($state);
         return false;
     }
 
