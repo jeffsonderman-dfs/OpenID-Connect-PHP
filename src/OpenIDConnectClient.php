@@ -732,11 +732,12 @@ class OpenIDConnectClient
 
     /**
      * Start Here
+     * @param array $state Custom state metadata to accompany the request
      * @return void
      * @throws OpenIDConnectClientException
      * @throws Exception
      */
-    private function requestAuthorization() {
+    private function requestAuthorization($state = array()) {
 
         $auth_endpoint = $this->getProviderConfigValue('authorization_endpoint');
         $response_type = 'code';
@@ -746,7 +747,8 @@ class OpenIDConnectClient
         $nonce = $this->setNonce($this->generateRandString());
 
         // State essentially acts as a session key for OIDC
-        $state = $this->setState($this->generateRandString());
+        $state['oidc_session_key'] = $this->generateRandString();
+        $state = $this->setState(json_encode($state));
 
         $auth_params = array_merge($this->authParams, [
             'response_type' => $response_type,
